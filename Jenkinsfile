@@ -67,12 +67,6 @@ pipeline {
                                 }
                             }
         }
-
-
-
-  }// stages
-
-
-
-}// pipeline
+  }
+}
 
