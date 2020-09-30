@@ -31,7 +31,7 @@ pipeline {
 
                         }
                     }
-                }
+        }
         stage('ACC tests') {
                                     when {
                                         // check if branch is master
@@ -53,8 +53,8 @@ pipeline {
                                     echo 'Sonar scan execution'
                                     }
                                 }
-                            }
         }
+
                         // waiting for sonar results based into the configured web hook in Sonar server which push the status back to jenkins
         stage('Sonar scan result check') {
                             steps {
@@ -62,10 +62,10 @@ pipeline {
                                         script {
                                             echo 'Sonar scan result check'
                                         }
-                                    }
-                                }
+
+                            }
         }
   }
-  }
+   }
 
 
