@@ -1,10 +1,9 @@
 pipeline {
   agent any
-  properties([
-      pipelineTriggers([
-          [$class: "SCMTrigger", scmpoll_spec: "H/5 * * * *"],
-      ])
-  ])
+ options {
+     buildDiscarder(logRotator(numToKeepStr:'1'))
+     disableConcurrentBuilds()
+ }
   stages {
         stage('Stage 1') {
           steps {
