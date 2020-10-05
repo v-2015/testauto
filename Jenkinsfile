@@ -56,10 +56,12 @@ triggers { pollSCM(*/1 * * * *) }
        {
         always
          {
-          publishHTML(target: [reportName: 'Site', reportDir: 'target/site/serenity', reportFiles: 'index.html', keepAll: false])
+          publishHTML(target: [reportName: 'Serenity Report', reportDir: 'target/site/serenity', reportFiles: 'index.html', keepAll: true])
          }
        }
      }
+
+
 
     stage('Deploy test')
      {
