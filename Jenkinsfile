@@ -46,15 +46,25 @@ stage('Documentation')
         echo "Running the smoke tests"
                   sh 'mvn clean verify -Denv="test" -Dtags="smokeTest" serenity:aggregate'
 
-              publishHTML target: [
-               allowMissing: false,
-               alwaysLinkToLastBuild: false,
-               keepAll: true,
-               reportName : 'Serenity Report',
-               reportDir:   'target/site/serenity',
-               reportFiles: 'index.html'
-             ]
-       }
+              script {
+                              sh 'ls target/jmeter/reports > listFiles.txt'
+                              def files = readFile("listFiles.txt").split("\\r?\\n");
+                              sh 'rm -f listFiles.txt'
+
+                              for (i = 0; i < files.size(); i++) {
+                                  publishHTML target: [
+                                      allowMissing:false,
+                                      alwaysLinkToLastBuild: false,
+                                      keepAll:true,
+                                      reportDir: 'target/jmeter/reports/' + files[i],
+                                      reportFiles: 'index.html',
+                                      reportName: files[i]
+                                  ]
+                              }
+                          }
+
+
+        }
 
 
      }
