@@ -47,9 +47,6 @@ stage('Documentation')
                   sh 'mvn clean verify -Denv="test" -Dtags="smokeTest" serenity:aggregate'
 
               script {
-                              sh 'ls target/jmeter/reports > listFiles.txt'
-                              def files = readFile("listFiles.txt").split("\\r?\\n");
-                              sh 'rm -f listFiles.txt'
 
                               for (i = 0; i < files.size(); i++) {
                                   publishHTML target: [
