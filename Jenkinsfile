@@ -31,7 +31,7 @@ triggers { pollSCM(*/1 * * * *) }
                }
               else
                {
-                bat 'mvn --batch-mode jar:jar source:jar install:install' // maven-jar-plugin falseCreation default is false, so no doubled jar construction here, but required for maven-install-plugin internal data
+                bat 'mvn --batch-mode jar:jar source:jar install:install'
                }
              }
            }
