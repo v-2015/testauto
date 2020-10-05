@@ -19,121 +19,23 @@ triggers { pollSCM(*/1 * * * *) }
 
   stages
    {
-    stage('Clean')
-     {
-      steps
-       {
-        script
+     stage('install local')
          {
-          if (isUnix())
+          steps
            {
-            sh 'mvn --batch-mode clean'
-           }
-          else
-           {
-            bat 'mvn --batch-mode clean'
+            script
+             {
+              if (isUnix())
+               {
+                sh 'mvn --batch-mode jar:jar source:jar install:install'
+               }
+              else
+               {
+                bat 'mvn --batch-mode jar:jar source:jar install:install' // maven-jar-plugin falseCreation default is false, so no doubled jar construction here, but required for maven-install-plugin internal data
+               }
+             }
            }
          }
-       }
-     }
-
-    stage('Build')
-     {
-      steps
-       {
-        script
-         {
-          if (isUnix())
-           {
-            sh 'mvn --batch-mode compile'
-           }
-          else
-           {
-            bat 'mvn --batch-mode compile'
-           }
-         }
-       }
-     }
-
-    stage('UnitTests')
-     {
-      steps
-       {
-        script
-         {
-          if (isUnix())
-           {
-            sh 'mvn --batch-mode resources:testResources compiler:testCompile surefire:test'
-           }
-          else
-           {
-            bat 'mvn --batch-mode resources:testResources compiler:testCompile surefire:test'
-           }
-         }
-       }
-      post
-       {
-        always
-         {
-          junit testResults: 'target/surefire-reports/*.xml'
-         }
-       }
-     }
-
-    stage('Sanity check')
-     {
-      steps
-       {
-        script
-         {
-          if (isUnix())
-           {
-            sh 'mvn --batch-mode checkstyle:checkstyle pmd:pmd pmd:cpd com.github.spotbugs:spotbugs-maven-plugin:spotbugs'
-           }
-          else
-           {
-            bat 'mvn --batch-mode checkstyle:checkstyle pmd:pmd pmd:cpd com.github.spotbugs:spotbugs-maven-plugin:spotbugs'
-           }
-         }
-       }
-     }
-
-    stage('Packaging')
-     {
-      steps
-       {
-        script
-         {
-          if (isUnix())
-           {
-            sh 'mvn --batch-mode jar:jar'
-           }
-          else
-           {
-            bat 'mvn --batch-mode jar:jar'
-           }
-         }
-       }
-     }
-
-    stage('install local')
-     {
-      steps
-       {
-        script
-         {
-          if (isUnix())
-           {
-            sh 'mvn --batch-mode jar:jar source:jar install:install'
-           }
-          else
-           {
-            bat 'mvn --batch-mode jar:jar source:jar install:install' // maven-jar-plugin falseCreation default is false, so no doubled jar construction here, but required for maven-install-plugin internal data
-           }
-         }
-       }
-     }
-
     stage('Documentation')
      {
       steps
@@ -182,24 +84,6 @@ triggers { pollSCM(*/1 * * * *) }
        }
      }
 
-    stage('Integration tests')
-     {
-      steps
-       {
-        script
-         {
-          if (isUnix())
-           {
-            sh 'mvn --batch-mode failsafe:integration-test failsafe:verify'
-           }
-          else
-           {
-            bat 'mvn --batch-mode failsafe:integration-test failsafe:verify'
-           }
-         }
-       }
-     }
-
-   }
+}
 
  }
