@@ -4,8 +4,7 @@ pipeline
 
   tools
    {
-    maven 'Maven3'
-    jdk 'JDK8'
+        maven "Maven"
    }
 
   options
