@@ -56,7 +56,7 @@ stage('Documentation')
                                       allowMissing:false,
                                       alwaysLinkToLastBuild: false,
                                       keepAll:true,
-                                      reportDir: 'target/jmeter/reports/' + files[i],
+                                      reportDir: 'target/site/serenity/' + files[i],
                                       reportFiles: 'index.html',
                                       reportName: files[i]
                                   ]
