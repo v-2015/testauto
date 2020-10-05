@@ -1,66 +1,211 @@
-pipeline {
+pipeline
+ {
   agent any
 
-  stages {
-        stage('Stage 1') {
-          steps {
-            script {
-              echo 'Stage 1'
-            }
-          }
-        }
+  tools
+   {
+    maven 'Maven3'
+    jdk 'JDK8'
+   }
 
-        stage('Build with unit testing') {
-          steps {
-            // Run the maven build
-             script {
-                echo 'Build with unit testing'
-             }
-          }
-        }
-        stage('Integration tests') {
-                    // Run integration test
-                    steps {
-                        script {
-                            echo 'Integration tests'
-
-                        }
-                    }
-        }
-        stage('ACC tests') {
-                                    when {
-                                        // check if branch is master
-                                        branch 'master'
-                                    }
-                                    steps {
-                                        // give some time till the deployment is done, so we wait 45 seconds
-                                        sleep(45)
-                                        script {
-                                        echo 'ACC tests'
-                                        }
-                                    }
-        }
-
-        stage('Sonar scan execution') {
-                            // Run the sonar scan
-                            steps {
-                                script {
-                                    echo 'Sonar scan execution'
-                                    }
-                                }
-        }
-
-                        // waiting for sonar results based into the configured web hook in Sonar server which push the status back to jenkins
-        stage('Sonar scan result check') {
-                            steps {
-
-                                        script {
-                                            echo 'Sonar scan result check'
-                                        }
-
-                            }
-        }
-  }
+  options
+   {
+    buildDiscarder(logRotator(numToKeepStr: '4'))
+    skipStagesAfterUnstable()
+    disableConcurrentBuilds()
    }
 
 
+  triggers
+   {
+    // MINUTE HOUR DOM MONTH DOW
+    pollSCM('H 6-18/4 * * 1-5')
+   }
+
+
+  stages
+   {
+    stage('Clean')
+     {
+      steps
+       {
+        script
+         {
+          if (isUnix())
+           {
+            sh 'mvn --batch-mode clean'
+           }
+          else
+           {
+            bat 'mvn --batch-mode clean'
+           }
+         }
+       }
+     }
+
+    stage('Build')
+     {
+      steps
+       {
+        script
+         {
+          if (isUnix())
+           {
+            sh 'mvn --batch-mode compile'
+           }
+          else
+           {
+            bat 'mvn --batch-mode compile'
+           }
+         }
+       }
+     }
+
+    stage('UnitTests')
+     {
+      steps
+       {
+        script
+         {
+          if (isUnix())
+           {
+            sh 'mvn --batch-mode resources:testResources compiler:testCompile surefire:test'
+           }
+          else
+           {
+            bat 'mvn --batch-mode resources:testResources compiler:testCompile surefire:test'
+           }
+         }
+       }
+      post
+       {
+        always
+         {
+          junit testResults: 'target/surefire-reports/*.xml'
+         }
+       }
+     }
+
+    stage('Sanity check')
+     {
+      steps
+       {
+        script
+         {
+          if (isUnix())
+           {
+            sh 'mvn --batch-mode checkstyle:checkstyle pmd:pmd pmd:cpd com.github.spotbugs:spotbugs-maven-plugin:spotbugs'
+           }
+          else
+           {
+            bat 'mvn --batch-mode checkstyle:checkstyle pmd:pmd pmd:cpd com.github.spotbugs:spotbugs-maven-plugin:spotbugs'
+           }
+         }
+       }
+     }
+
+    stage('Packaging')
+     {
+      steps
+       {
+        script
+         {
+          if (isUnix())
+           {
+            sh 'mvn --batch-mode jar:jar'
+           }
+          else
+           {
+            bat 'mvn --batch-mode jar:jar'
+           }
+         }
+       }
+     }
+
+    stage('install local')
+     {
+      steps
+       {
+        script
+         {
+          if (isUnix())
+           {
+            sh 'mvn --batch-mode jar:jar source:jar install:install'
+           }
+          else
+           {
+            bat 'mvn --batch-mode jar:jar source:jar install:install' // maven-jar-plugin falseCreation default is false, so no doubled jar construction here, but required for maven-install-plugin internal data
+           }
+         }
+       }
+     }
+
+    stage('Documentation')
+     {
+      steps
+       {
+        script
+         {
+          if (isUnix())
+           {
+            sh 'mvn --batch-mode site'
+           }
+          else
+           {
+            bat 'mvn --batch-mode site'
+           }
+         }
+       }
+      post
+       {
+        always
+         {
+          publishHTML(target: [reportName: 'Site', reportDir: 'target/site', reportFiles: 'index.html', keepAll: false])
+         }
+       }
+     }
+
+    stage('Deploy test')
+     {
+      steps
+       {
+        script
+         {
+          if (isUnix())
+           {
+            // todo
+           }
+          else
+           {
+            bat returnStatus: true, script: 'sc stop Tomcat8'
+            sleep(time:30, unit:"SECONDS")
+            bat returnStatus: true, script: 'C:\\scripts\\clean.bat'
+            bat returnStatus: true, script: 'robocopy "target" "C:\\Program Files\\Apache Software Foundation\\Tomcat 9.0\\webapps" Test.war'
+            bat 'sc start Tomcat8'
+            sleep(time:30, unit:"SECONDS")
+           }
+         }
+       }
+     }
+
+    stage('Integration tests')
+     {
+      steps
+       {
+        script
+         {
+          if (isUnix())
+           {
+            sh 'mvn --batch-mode failsafe:integration-test failsafe:verify'
+           }
+          else
+           {
+            bat 'mvn --batch-mode failsafe:integration-test failsafe:verify'
+           }
+         }
+       }
+     }
+
+   }
+
+ }
