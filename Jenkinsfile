@@ -1,9 +1,6 @@
 pipeline {
   agent any
- options {
-     buildDiscarder(logRotator(numToKeepStr:'1'))
-     disableConcurrentBuilds()
- }
+
   stages {
         stage('Stage 1') {
           steps {
@@ -12,13 +9,7 @@ pipeline {
             }
           }
         }
-        stage('Stage 2') {
-          steps {
-            script {
-              echo 'Stage 2'
-            }
-          }
-        }
+
         stage('Build with unit testing') {
           steps {
             // Run the maven build
