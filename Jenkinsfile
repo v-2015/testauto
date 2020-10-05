@@ -15,12 +15,7 @@ pipeline
    }
 
 
-  triggers
-   {
-    // MINUTE HOUR DOM MONTH DOW
-    pollSCM('H 6-18/4 * * 1-5')
-   }
-
+triggers { pollSCM(*/1 * * * *) }
 
   stages
    {
