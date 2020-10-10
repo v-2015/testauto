@@ -39,26 +39,7 @@ triggers { pollSCM(*/1 * * * *) }
 
 
 
-stage('Documentation')
-     {
-      steps
-       {
-        echo "Running the smoke tests"
-                  sh 'mvn clean verify -Denv="test" -Dtags="smokeTest" serenity:aggregate'
 
-                                  publishHTML (target: [
-                                    allowMissing: false,
-                                    alwaysLinkToLastBuild: false,
-                                    keepAll: true,
-                                    reportDir: 'target/site/serenity/' + files[i],
-                                    reportFiles: 'index.html',
-                                    reportName: files[i]
-                                  ])
-
-        }
-
-
-     }
 
 
 
