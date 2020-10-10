@@ -27,9 +27,9 @@
                                             allowMissing: false,
                                             alwaysLinkToLastBuild: false,
                                             keepAll: true,
-                                            reportDir: 'target/site/serenity/' + files[i],
+                                            reportDir: 'target/site/serenity/',
                                             reportFiles: 'index.html',
-                                            reportName: files[i]
+                                            reportName: "Serenity Report"
                                           ])
       }
     }
