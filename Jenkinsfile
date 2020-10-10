@@ -21,7 +21,6 @@
   stage('Stage 2') {
       steps {
         echo "Running the smoke tests"
-                          sh 'mvn clean install'
 
                                          publishHTML(target: [
                                                  reportName : 'Serenity',
