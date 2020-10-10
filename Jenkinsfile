@@ -21,16 +21,16 @@
   stage('Stage 2') {
       steps {
         echo "Running the smoke tests"
-                          sh 'mvn clean verify -Denv="test" -Dtags="smokeTest" serenity:aggregate'
+                          sh 'mvn clean install'
 
-                                          publishHTML (target: [
-                                            allowMissing: false,
-                                            alwaysLinkToLastBuild: false,
-                                            keepAll: true,
-                                            reportDir: 'target/site/serenity/',
-                                            reportFiles: 'index.html',
-                                            reportName: "Serenity Report"
-                                          ])
+                                         publishHTML(target: [
+                                                 reportName : 'Serenity',
+                                                 reportDir:   'target/site/serenity',
+                                                 reportFiles: 'index.html',
+                                                 keepAll:     true,
+                                                 alwaysLinkToLastBuild: true,
+                                                 allowMissing: false
+                                             ])
       }
     }
   }
