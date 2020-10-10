@@ -13,7 +13,7 @@
                                             }
                                             else
                                             {
-                                            bat 'mvn clean verify'
+                                            bat 'mvn clean'
                                             }
                                         }
       }
