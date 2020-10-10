@@ -21,7 +21,7 @@
   stage('Stage 2') {
       steps {
         echo "Running the smoke tests"
-        bat "./mvnw.cmd clean install"
+        bat "mvnw.cmd clean install"
                                          publishHTML(target: [
                                                  reportName : 'Serenity',
                                                  reportDir:   'target/site/serenity',
