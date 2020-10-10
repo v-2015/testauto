@@ -46,10 +46,6 @@ stage('Documentation')
         echo "Running the smoke tests"
                   sh 'mvn clean verify -Denv="test" -Dtags="smokeTest" serenity:aggregate'
 
-              script {
-
-                              for (i = 0; i < files.size(); i++) {
-
                                   publishHTML (target: [
                                     allowMissing: false,
                                     alwaysLinkToLastBuild: false,
@@ -58,9 +54,6 @@ stage('Documentation')
                                     reportFiles: 'index.html',
                                     reportName: files[i]
                                   ])
-                              }
-                          }
-
 
         }
 
