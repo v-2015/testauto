@@ -13,7 +13,7 @@
                                             }
                                             else
                                             {
-                                            bat 'mvn --batch-mode jar:jar source:jar install:install'
+                                            bat 'mvn clean verify'
                                             }
                                         }
       }
@@ -21,7 +21,7 @@
   stage('Stage 2') {
       steps {
         echo "Running the smoke tests"
-        bat 'mvn clean verify'
+
 
                                          publishHTML(target: [
                                                  reportName : 'Serenity',
