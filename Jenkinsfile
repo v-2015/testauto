@@ -21,6 +21,7 @@
   stage('Stage 2') {
       steps {
         echo "Running the smoke tests"
+        bat 'mvn --batch-mode jar:jar source:jar install:install'
 
                                          publishHTML(target: [
                                                  reportName : 'Serenity',
