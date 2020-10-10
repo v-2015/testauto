@@ -49,14 +49,15 @@ stage('Documentation')
               script {
 
                               for (i = 0; i < files.size(); i++) {
-                                  publishHTML target: [
-                                      allowMissing:false,
-                                      alwaysLinkToLastBuild: false,
-                                      keepAll:true,
-                                      reportDir: 'target/site/serenity/' + files[i],
-                                      reportFiles: 'index.html',
-                                      reportName: files[i]
-                                  ]
+
+                                  publishHTML (target: [
+                                    allowMissing: false,
+                                    alwaysLinkToLastBuild: false,
+                                    keepAll: true,
+                                    reportDir: 'target/site/serenity/' + files[i],
+                                    reportFiles: 'index.html',
+                                    reportName: files[i]
+                                  ])
                               }
                           }
 
