@@ -19,17 +19,19 @@
       }
     }
         stage('Smoke') {
-        script {
-            try {
-                bat "mvn clean verify -Dtags='type:Smoke'"
-            } catch (err) {
+             steps {
+            script {
+                try {
+                    bat "mvn clean verify -Dtags='type:Smoke'"
+                    } catch (err) {
 
-            } finally {
-                publishHTML (target: [
+                    } finally {
+                        publishHTML (target: [
                         reportDir: 'target/site/serenity',
                         reportFiles: 'index.html',
                         reportName: "Smoke tests report"
-                ])
+                        ])
+                    }
             }
             }
         }
