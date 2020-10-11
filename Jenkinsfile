@@ -22,7 +22,7 @@
              steps {
             script {
                 try {
-                    bat "mvn clean verify -Dtags='type:Smoke'"
+                    bat "mvn clean verify install -Dtags='type:Smoke'"
                     } catch (err) {
 
                     } finally {
