@@ -21,7 +21,6 @@
 
         stage('Smoke') {
              steps {
-                echo "Running the smoke tests"
                 bat "mvn clean verify install -Dtags='type:Smoke'"
                                                  publishHTML(target: [
                                                          reportName : 'Serenity',
