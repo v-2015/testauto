@@ -19,6 +19,7 @@
       }
     }
         stage('Smoke') {
+        script {
             try {
                 bat "mvn clean verify -Dtags='type:Smoke'"
             } catch (err) {
@@ -29,6 +30,7 @@
                         reportFiles: 'index.html',
                         reportName: "Smoke tests report"
                 ])
+            }
             }
         }
 
