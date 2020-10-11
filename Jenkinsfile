@@ -19,22 +19,7 @@
       }
     }
 
-        stage('Smoke') {
-             steps {
-                bat "mvn clean verify install -Dtags='type:Smoke'"
-                                                 publishHTML(target: [
-                                                         reportName : 'Serenity',
-                                                         reportDir:   'target/site/serenity',
-                                                         reportFiles: 'index.html',
-                                                         keepAll:     true,
-                                                         alwaysLinkToLastBuild: true,
-                                                         allowMissing: false
 
-
-                                                     ])
-              }
-
-        }
 
   }
 }
