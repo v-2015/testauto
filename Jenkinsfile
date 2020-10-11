@@ -18,19 +18,19 @@
                                         }
       }
     }
-  stage('Stage 2') {
-      steps {
-        echo "Running the smoke tests"
-        bat 'mvn --batch-mode jar:jar source:jar install:install'
-                                         publishHTML(target: [
-                                                 reportName : 'Serenity',
-                                                 reportDir:   'target/site/serenity',
-                                                 reportFiles: 'index.html',
-                                                 keepAll:     true,
-                                                 alwaysLinkToLastBuild: true,
-                                                 allowMissing: false
-                                             ])
-      }
-    }
+        stage('Smoke') {
+            try {
+                bat "mvn clean verify -Dtags='type:Smoke'"
+            } catch (err) {
+
+            } finally {
+                publishHTML (target: [
+                        reportDir: 'target/site/serenity',
+                        reportFiles: 'index.html',
+                        reportName: "Smoke tests report"
+                ])
+            }
+        }
+
   }
 }
