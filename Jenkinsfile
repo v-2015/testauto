@@ -21,20 +21,18 @@
 
         stage('Smoke') {
              steps {
-            script {
-                try {
-                    bat "mvn clean verify install -Dtags='type:Smoke'"
-                    } catch (err) {
+                echo "Running the smoke tests"
+                bat "mvn clean verify install -Dtags='type:Smoke'"
+                                                 publishHTML(target: [
+                                                         reportName : 'Serenity',
+                                                         reportDir:   'target/site/serenity',
+                                                         reportFiles: 'index.html',
+                                                         keepAll:     true,
+                                                         alwaysLinkToLastBuild: true,
+                                                         allowMissing: false
+                                                     ])
+              }
 
-                    } finally {
-                        publishHTML (target: [
-                        reportDir: 'target/site/serenity',
-                        reportFiles: 'index.html',
-                        reportName: "Smoke tests report"
-                        ])
-                    }
-            }
-            }
         }
 
   }
