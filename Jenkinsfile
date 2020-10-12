@@ -19,7 +19,12 @@
       }
     }
 
-
+stage('Stage 2') {
+      steps {
+          script
+                                        echo 'stage 2'
+      }
+    }
 
   }
 }
