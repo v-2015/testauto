@@ -22,7 +22,7 @@
 stage('Stage 2') {
       steps {
           script
-                                        echo 'output stage 2'
+                                        echo 'stage 2'
       }
     }
 
