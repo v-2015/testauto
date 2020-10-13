@@ -1,30 +1,57 @@
- pipeline {
-  agent any
-  tools
-              { maven 'maven' }
+pipeline {
+  agent none
   stages {
-  stage('Stage 1') {
+    stage('Build & Test') {
+      agent {
+        node {
+          label 'docker'
+        }
+      }
       steps {
-          script
-                                        {
-                                            if (isUnix())
-                                            {
-                                                sh 'mvn --batch-mode jar:jar source:jar install:install'
-                                            }
-                                            else
-                                            {
-                                            bat 'mvn clean'
-                                            }
-                                        }
+        sh 'mvn -Dmaven.test.failure.ignore clean package'
+        stash(name: 'build-test-artifacts', \
+        includes: '**/target/surefire-reports/TEST-*.xml,target/*.jar')
       }
     }
+    stage('Report & Publish') {
+      parallel {
+        stage('Report & Publish') {
+          agent {
+            node {
+              label 'docker'
+            }
+          }
+          steps {
+            unstash 'build-test-artifacts'
+            junit '**/target/surefire-reports/TEST-*.xml'
+            archiveArtifacts(onlyIfSuccessful: true, artifacts: 'target/*.jar')
+          }
+        }
+        stage('Publish to Artifactory') {
+          agent {
+            node {
+              label 'docker'
+            }
+          }
+          steps {
+            script {
+              unstash 'build-test-artifacts'
 
-stage('Stage 2') {
-      steps {
-          script
-                                        echo 'put stage 2'
+              def server = Artifactory.server 'Artifactory'
+              def uploadSpec = """{
+                "files": [
+                  {
+                    "pattern": "target/*.jar",
+                    "target": "example-repo-local/${BRANCH_NAME}/${BUILD_NUMBER}/"
+                  }
+                ]
+              }"""
+              server.upload(uploadSpec)
+            }
+
+          }
+        }
       }
     }
-
   }
 }
